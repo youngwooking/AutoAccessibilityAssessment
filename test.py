@@ -34,7 +34,42 @@ def create_comparison_result(image_path):
     for key, value in results.items():
         print(f"{key}: {value}")
 
+def calculate_contrast_ratio(L1, L2):
+    L1 = L1 + 0.05
+    L2 = L2 + 0.05
+    if L1 > L2:
+        return L1 / L2
+    else:
+        return L2 / L1
+    
+def calculate_relative_luminance(color):
+    if any(c < 0 or c > 255 for c in color):
+        raise ValueError("Color values should be in the range 0-255")
+
+    if color[0]/255 <= 0.03928:
+        R = color[0]/255/12.92
+    else:
+        R = ((color[0]/255 + 0.055)/1.055)**2.4
+    if color[1]/255 <= 0.03928:
+        G = color[1]/255/12.92
+    else:  
+        G = ((color[1]/255 + 0.055)/1.055)**2.4
+    if color[2]/255 <= 0.03928:
+        B = color[2]/255/12.92
+    else:
+        B = ((color[2]/255 + 0.055)/1.055)**2.4
+        
+    return 0.2126 * R + 0.7152 * G + 0.0722 * B
+
+
+
 # Main function
 if __name__ == "__main__":
-    image_path = "path_to_your_image_file.png"
-    create_comparison_result(image_path)
+    # image_path = "path_to_your_image_file.png"
+    # create_comparison_result(image_path)
+    print(
+        calculate_contrast_ratio(
+            calculate_relative_luminance((135, 135, 135)),
+            calculate_relative_luminance((1313, 42, 52))
+        )
+    )
